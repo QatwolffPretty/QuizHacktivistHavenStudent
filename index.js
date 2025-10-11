@@ -1,3 +1,4 @@
+
 // Unit17 Cybersecurity Quiz — Cleaned & Corrected
 
 // ---------- QUESTION BANKS ----------
@@ -389,3 +390,9 @@ function drawConfetti() {
 
 // ---------- Init ----------
 renderLeaderboard();
+
+// ...existing code...
+
+document.getElementById('adminLoginBtn').onclick = function() {
+  window.location.href = "admin page.html";
+};

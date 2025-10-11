@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>Unit17 — Admin Scores</title>
+  <link rel="stylesheet" href="index.css">
   <style>
     body { background:#071728; color:#00f6d8; font-family:Inter,Arial,sans-serif; padding:40px; }
     h1 { font-size:1.5em; }
@@ -61,6 +62,7 @@
       if (adminPass.value === adminPassword) {
         loginBox.style.display = 'none';
         adminContent.style.display = '';
+        renderTable(levelSelect.value);
       } else {
         loginError.textContent = "Incorrect password!";
         loginError.style.display = '';
@@ -69,32 +71,35 @@
       }
     };
 
-    // --- Leaderboard Table ---
-    function getLeaderboard() {
-      try {
-        const raw = localStorage.getItem('unit17_leaderboard_v1');
-        return raw ? JSON.parse(raw) : {};
-      } catch (e) { return {}; }
-    }
+    // --- Leaderboard Table from Google Sheets ---
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwrMblm5fmGSSvkV9q53gyYow-LJqdof-3zNQwj-mHQJChEGYQd2t4h9uzehNjGN-s8/exec"; // <-- Replace with your Apps Script web app URL
+
     function renderTable(level) {
-      const lb = getLeaderboard();
-      const list = lb[level] || [];
-      const tbody = document.querySelector('#scoreTable tbody');
-      tbody.innerHTML = '';
-      if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#8fb0b8;">No scores for this level.</td></tr>`;
-        return;
-      }
-      list.forEach((entry, i) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i+1}</td><td>${entry.name}</td><td>${entry.score}</td><td>${entry.date}</td>`;
-        tbody.appendChild(tr);
-      });
+      fetch(GOOGLE_SHEET_URL)
+        .then(r => r.json())
+        .then(list => {
+          const tbody = document.querySelector('#scoreTable tbody');
+          tbody.innerHTML = '';
+          const filtered = list.filter(entry => entry.level === level);
+          if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#8fb0b8;">No scores for this level.</td></tr>`;
+            return;
+          }
+          filtered.forEach((entry, i) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${i+1}</td><td>${entry.name}</td><td>${entry.score}</td><td>${entry.date}</td>`;
+            tbody.appendChild(tr);
+          });
+        })
+        .catch(() => {
+          const tbody = document.querySelector('#scoreTable tbody');
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ff6b6b;">Unable to load scores. Check your Google Script URL.</td></tr>`;
+        });
     }
+
     const levelSelect = document.getElementById('level');
     if (levelSelect) {
       levelSelect.onchange = () => renderTable(levelSelect.value);
-      renderTable(levelSelect.value);
     }
   </script>
 </body>

@@ -1,4 +1,3 @@
-
 // Unit17 Cybersecurity Quiz — Cleaned & Corrected
 
 // ---------- QUESTION BANKS ----------
@@ -260,7 +259,7 @@ function finish() {
   if (pct >= 50) fireConfetti();
 }
 
-// ---------- Leaderboard ----------
+// ---------- Leaderboard (local) ----------
 const LB_KEY = 'unit17_leaderboard_v1';
 function getLeaderboard() {
   try {
@@ -311,12 +310,29 @@ exportLBBtn.addEventListener('click', () => {
   URL.revokeObjectURL(url);
 });
 
-// ---------- Save Score ----------
+// ---------- Save Score (local + Google Sheets) ----------
+// Replace with your actual Google Apps Script web app URL
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwrMblm5fmGSSvkV9q53gyYow-LJqdof-3zNQwj-mHQJChEGYQd2t4h9uzehNjGN-s8/exec";
+
+function sendScoreToGoogleSheet(name, score, level) {
+  fetch(GOOGLE_SHEET_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      name: name,
+      score: score,
+      level: level,
+      date: new Date().toLocaleString()
+    }),
+    headers: { "Content-Type": "application/json" }
+  }).then(r => r.text()).then(console.log);
+}
+
 saveScoreBtn.addEventListener('click', () => {
   const name = (document.getElementById('saveName').value || state.username || 'Guest').trim();
   const pts = parseInt(scoreEl.textContent) || 0;
-  addScoreToLeaderboard(state.level, name, pts);
-  alert('Score saved to local leaderboard!');
+  addScoreToLeaderboard(state.level, name, pts); // local
+  sendScoreToGoogleSheet(name, pts, state.level); // cloud
+  alert('Score saved to leaderboard!');
 });
 
 // ---------- Review & Replay ----------
@@ -388,11 +404,10 @@ function drawConfetti() {
   if (confettiPieces.length) requestAnimationFrame(drawConfetti);
 }
 
-// ---------- Init ----------
-renderLeaderboard();
-
-// ...existing code...
-
+// ---------- Admin Button ----------
 document.getElementById('adminLoginBtn').onclick = function() {
   window.location.href = "admin page.html";
 };
+
+// ---------- Init ----------
+renderLeaderboard();

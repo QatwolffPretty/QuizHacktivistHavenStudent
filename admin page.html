@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Unit17 — Admin Scores</title>
+  <style>
+    body { background:#071728; color:#00f6d8; font-family:Inter,Arial,sans-serif; padding:40px; }
+    h1 { font-size:1.5em; }
+    .login-box { background:#071722; border-radius:12px; padding:24px; max-width:340px; margin:40px auto 24px; box-shadow:0 4px 24px #0003; }
+    .login-box label { display:block; margin-bottom:8px; color:#8fb0b8; }
+    .login-box input[type="password"] { width:100%; padding:8px; border-radius:8px; border:1px solid #00f6d8; background:#030712; color:#00f6d8; font-size:1em; margin-bottom:12px; }
+    .login-box button { background:linear-gradient(90deg,#00f6d8,#5af0ff); color:#022; border:none; border-radius:8px; padding:8px 18px; font-weight:bold; cursor:pointer; }
+    .login-box .error { color:#ff6b6b; margin-bottom:8px; }
+    table { border-collapse:collapse; width:100%; margin-top:20px; background:#071722; border-radius:12px; overflow:hidden; }
+    th, td { padding:10px 14px; border-bottom:1px solid #222; }
+    th { background:#00f6d8; color:#022; }
+    tr:last-child td { border-bottom:none; }
+    .level-select { margin-top:18px; padding:6px 12px; border-radius:8px; border:1px solid #00f6d8; background:#030712; color:#00f6d8; }
+  </style>
+</head>
+<body>
+  <h1>Unit17 — Student Scores (Admin)</h1>
+  <div class="login-box" id="loginBox">
+    <form id="adminLogin" autocomplete="off">
+      <label for="adminPass">Admin Password:</label>
+      <input type="password" id="adminPass" required />
+      <div class="error" id="loginError" style="display:none"></div>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+  <div id="adminContent" style="display:none">
+    <label for="level" style="font-size:1.1em">Select Level:</label>
+    <select id="level" class="level-select">
+      <option value="beginner">Beginner</option>
+      <option value="hard">Hard</option>
+      <option value="advanced">Advanced</option>
+    </select>
+    <table id="scoreTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Score</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <script>
+    // --- Admin Login ---
+    const adminPassword = "unit17admin"; // Change this password as needed
+    const loginBox = document.getElementById('loginBox');
+    const adminContent = document.getElementById('adminContent');
+    const adminLogin = document.getElementById('adminLogin');
+    const adminPass = document.getElementById('adminPass');
+    const loginError = document.getElementById('loginError');
+
+    adminLogin.onsubmit = function(e) {
+      e.preventDefault();
+      if (adminPass.value === adminPassword) {
+        loginBox.style.display = 'none';
+        adminContent.style.display = '';
+      } else {
+        loginError.textContent = "Incorrect password!";
+        loginError.style.display = '';
+        adminPass.value = '';
+        adminPass.focus();
+      }
+    };
+
+    // --- Leaderboard Table ---
+    function getLeaderboard() {
+      try {
+        const raw = localStorage.getItem('unit17_leaderboard_v1');
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) { return {}; }
+    }
+    function renderTable(level) {
+      const lb = getLeaderboard();
+      const list = lb[level] || [];
+      const tbody = document.querySelector('#scoreTable tbody');
+      tbody.innerHTML = '';
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#8fb0b8;">No scores for this level.</td></tr>`;
+        return;
+      }
+      list.forEach((entry, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td>${entry.name}</td><td>${entry.score}</td><td>${entry.date}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    const levelSelect = document.getElementById('level');
+    if (levelSelect) {
+      levelSelect.onchange = () => renderTable(levelSelect.value);
+      renderTable(levelSelect.value);
+    }
+  </script>
+</body>
+</html>

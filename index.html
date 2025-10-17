@@ -1,126 +1,76 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Unit17 — Cybersecurity Quiz</title>
-    <link rel="stylesheet" href="index.css">
-  </head>
-  <body>
-    <div class="wrap">
-      <div class="card" role="application" aria-label="Unit17 Cybersecurity Quiz">
-        <header>
-          <div class="logo">U17</div>
-          <div>
-            <h1>Unit17 — Cybersecurity Quiz</h1>
-            <p class="lead">Choose a level, answer 20 questions, and test your cybersecurity skills. All English. Neon UI.</p>
-          </div>
-        </header>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hacktivist Haven – Cybersecurity Quiz</title>
+  <link rel="icon" type="image/png" href="forum-bg.png" />
+  <link rel="stylesheet" href="secondquiz.css" />
+</head>
+<body>
+  <div class="quiz-wrap">
+    <header class="quiz-header glass">
+      <div class="logo"><img src="forum-bg.png" alt="Hacktivist Haven"></div>
+      <div class="brand-text">
+        <h1>Hacktivist Haven</h1>
+        <p class="lead">Cybersecurity Quiz</p>
+      </div>
+    </header>
 
-        <div class="grid">
-          <main class="panel">
-            <!-- Setup -->
-            <section id="setupPanel">
-              <div class="setup-row">
-                <div class="setup-left">
-                  <label class="small">Enter your name</label>
-                  <input id="username" type="text" placeholder="e.g. Alice" maxlength="32" />
-                  <div class="hint">Name appears on the leaderboard. Leave blank to use 'Guest'. Keyboard: 1–4 to answer.</div>
-                </div>
-                <div class="setup-right">
-                  <label class="small">Choose a level</label>
-                  <div class="levels">
-                    <button class="level-btn" data-level="beginner">Beginner</button>
-                    <button class="level-btn" data-level="hard">Hard</button>
-                    <button class="level-btn" data-level="advanced">Advanced</button>
-                  </div>
-                </div>
-              </div>
-            </section>
+    <div id="progressBarContainer"><div id="progressBar"></div></div>
 
-            <!-- Quiz -->
-            <section id="quizPanel" class="hidden">
-              <div class="meta-top">
-                <div id="qIndex"><strong>1</strong> / <span id="qTotal">20</span></div>
-                <div class="progress" aria-hidden="true"><i id="prog"></i></div>
-              </div>
+    <!-- Advice + Name Input Section -->
+    <main id="nameCard" class="glass quiz-card">
+      <h2>Welcome, Student 👋</h2>
+      <p class="muted">Before starting, read these quick advice notes:</p>
+      <ul class="advice-list">
+        <li>Stay calm — this quiz focuses on understanding, not memorization.</li>
+        <li>Think like a hacker, but act ethically.</li>
+        <li>Each question is single-choice, one at a time.</li>
+        <li>Review your answers at the end to improve next time.</li>
+      </ul>
+      <input id="usernameInput" class="input-name" placeholder="Enter your name..." />
+      <button id="startQuizBtn" class="btn primary">Start Quiz</button>
+      <button id="adminAccess" class="btn secondary">Admin Access</button>
+      <p id="nameError" class="muted error">Invalid name. Please enter a valid name (not Guest).</p>
+    </main>
 
-              <div class="question" id="question">Question text</div>
-              <div class="answers" id="answers" role="list"></div>
+    <!-- Quiz Section -->
+    <main id="quizCard" class="glass quiz-card hidden">
+      <p id="progressText" class="muted">Question 1 of 20</p>
+      <h2 id="questionText">Loading...</h2>
+      <div id="answersContainer"></div>
+      <button id="nextBtn" class="btn primary">Next</button>
+    </main>
 
-              <div class="controls">
-                <button class="btn" id="prevBtn">← Previous</button>
-                <div class="right-controls">
-                  <button class="btn" id="skipBtn">Skip</button>
-                  <button class="btn primary" id="nextBtn">Next →</button>
-                </div>
-              </div>
-
-              <div id="explainBox" class="small muted" style="margin-top:10px"></div>
-            </section>
-
-            <!-- Result -->
-            <section id="resultPanel" class="hidden">
-              <div class="result-head">
-                <div>
-                  <h2 id="resultTitle"></h2>
-                  <div class="small muted" id="resultSub"></div>
-                </div>
-                <div class="result-right">
-                  <div id="resultBadge" class="result-badge">Badge</div>
-                </div>
-              </div>
-
-              <div class="save-row">
-                <label class="small" style="min-width:70px">Save score</label>
-                <input id="saveName" type="text" placeholder="Name for leaderboard (optional)" />
-                <button class="btn primary" id="saveScoreBtn">Save</button>
-              </div>
-
-              <div id="resultDetails" class="small muted"></div>
-
-              <div class="action-row">
-                <button class="btn" id="reviewBtn">Review Answers</button>
-                <button class="btn" id="playAgainBtn">Play Again</button>
-              </div>
-
-              <div id="reviewArea" class="hidden review-area"></div>
-            </section>
-          </main>
-            
-          <aside class="panel">
-            <button src="admin page.html" class="btn" id="adminLoginBtn" style="margin-bottom:12px;float:right;">Admin</button>
-            <h3>Stats & Leaderboard</h3>
-            <!-- ...rest of sidebar... -->
-            <div class="stat-row"><div class="small">Score</div><div id="score">0</div></div>
-            <div class="stat-row"><div class="small">Correct</div><div id="correct">0</div></div>
-            <div class="stat-row"><div class="small">Wrong</div><div id="wrong">0</div></div>
-            <div class="stat-row"><div class="small">Skipped</div><div id="skipped">0</div></div>
-
-            <div class="muted">Leaderboard (select level)</div>
-            <select id="lbLevel" class="lb-select">
-              <option value="beginner">Beginner</option>
-              <option value="hard">Hard</option>
-              <option value="advanced">Advanced</option>
-            </select>
-
-            <div class="leaderboard" id="leaderboard"></div>
-
-            <div class="lb-controls">
-              <button class="btn" id="clearLB">Clear Leaderboard</button>
-              <button class="btn" id="exportLB">Export (JSON)</button>
-            </div>
-
-            <div class="muted credit">© 2025 Hacktivist Haven Quiz — All Rights Reserved</div>
-          </aside>
-        </div>
-
-        <footer class="footer-note">Built with ❤️ by Hacktivist Haven — do not remove this credit.</footer>
-
-        <canvas class="confetti" id="confetti"></canvas>
+    <!-- Result Section -->
+    <div id="resultModal" class="glass hidden">
+      <h2>🎉 Quiz Complete!</h2>
+      <p id="resultText">You scored 0 / 20</p>
+      <p id="userNameText" class="muted"></p>
+      <p id="rankText" class="muted"></p>
+      <div id="answersReview"></div>
+      <div class="result-actions">
+        <button id="retryQuiz" class="btn primary">Retry Quiz</button>
+        <button id="returnDashboard" class="btn primary">Return to Dashboard</button>
       </div>
     </div>
-        <script src="index.js"></script>
-  </body>
-</html>
+  </div>
 
+  <!-- Admin Modal -->
+  <div id="adminModal">
+    <div id="adminBox" class="glass">
+      <h3>Admin Access</h3>
+      <input type="password" id="adminPass" placeholder="Enter password">
+      <div class="admin-actions">
+        <button id="adminLogin" class="btn primary">Login</button>
+        <button id="adminCancel" class="btn secondary">Cancel</button>
+      </div>
+      <p id="adminMsg" class="muted error">Incorrect password.</p>
+    </div>
+  </div>
+
+  <canvas id="confettiCanvas"></canvas>
+  <script src="secondquiz.js"></script>
+</body>
+</html>

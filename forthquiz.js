@@ -209,6 +209,16 @@
     document.body.appendChild(volumeControl);
   }
 
+  const muteBtn = document.getElementById("muteBtn");
+  let muted = false;
+  
+  muteBtn.onclick = () => {
+    muted = !muted;
+    masterGain.gain.value = muted ? 0 : parseFloat(volumeControl.value);
+    muteBtn.textContent = muted ? "🔇" : "🔊";
+  };
+
+
   // ======== State ========
   let username = "";
   let current = 0;

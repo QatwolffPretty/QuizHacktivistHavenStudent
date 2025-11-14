@@ -24,6 +24,23 @@ body {
   overflow-x: hidden;
 }
 
+.mute-btn {
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #f00;
+  z-index: 50;
+  transition: 0.2s;
+}
+.mute-btn:hover {
+  transform: scale(1.15);
+}
+
+
 canvas#confettiCanvas {
   position: fixed;
   top: 0;
